@@ -1,2 +1,10 @@
 # SuperMOD---Discord-BOT
-A simple dicord bot that shows corona status for required country.
+A simple discord bot.
+
+*!covid <country>
+
+*!cal <arithmetic>
+
+*!spam <count> <message>
+
+*!purge <count>
