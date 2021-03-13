@@ -1,10 +1,10 @@
 # SuperMOD---Discord-BOT
 A simple discord bot.
 
-*!covid <country>
+*!covid <country>*
 
-*!cal <arithmetic>
+*!cal <arithmetic>*
 
-*!spam <count> <message>
+*!spam <count> <message>*
 
-*!purge <count>
+*!purge <count>*
