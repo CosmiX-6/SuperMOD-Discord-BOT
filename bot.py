@@ -24,6 +24,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 bot = commands.Bot(command_prefix='!')
+bot.remove_command('help')
 
 def import_html_asset(html_filename):
     d = pd.read_html(html_filename)
@@ -97,6 +98,14 @@ async def choose(ctx,*args):
   # print(help(ctx.author))
   if '<@!' in choosen: await ctx.send(f'> {ctx.author}, I choose {choosen}.')
   else: await ctx.send(f'> {ctx.author}, I choose `{choosen}`.')
+    
+@bot.command(name="help")
+async def help(ctx,*args)
+    help_embed = discord.Embed(title="Command Help",description="Here are all the commands and their usages.",color=0x14ff30)
+    help_embed.add_field(name="$spam", value="usage: `!spam <count> <message>`\nspams a message for the given number of times",inline=False)
+    help_embed.add_field(name="$covid", value="usage: `!covid <country>`\ngives covid info about a country",inline=False)
+    help_embed.set_footer(text="developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
+    ctx.send(embed=help_embed)
     
 @bot.command(name='cal')
 async def addition(ctx,*args):
