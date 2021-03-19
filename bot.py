@@ -105,7 +105,7 @@ async def help(ctx,*args)
     help_embed.add_field(name="$spam", value="usage: `!spam <count> <message>`\nspams a message for the given number of times",inline=False)
     help_embed.add_field(name="$covid", value="usage: `!covid <country>`\ngives covid info about a country",inline=False)
     help_embed.set_footer(text="developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
-    ctx.send(embed=help_embed)
+    await ctx.send(embed=help_embed)
     
 @bot.command(name='cal')
 async def addition(ctx,*args):
