@@ -72,8 +72,6 @@ async def sm_translate(ctx,alias,*args):
 
     elif alias == '-ds' or alias == '-status':
         status = lang_translator.detectors_status()
-        print(status)
-        print(type(status))
         embed=discord.Embed(title="Account status", color=0x14ff30, description="Note : Please use this detector only when required.")
         embed.set_author(name=":green_circle: Language detection Status")
         for key, value in status.items():
