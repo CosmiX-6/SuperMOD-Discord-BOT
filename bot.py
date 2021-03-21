@@ -9,6 +9,8 @@ import pandas as pd
 import datetime
 import discord
 from discord.ext import commands
+from super_mod import lang_translator
+import super_mod.assets.tr_asset_store as tas
 from dotenv import load_dotenv
 
 BASE_DIR = os.path.abspath('')
@@ -46,6 +48,67 @@ def import_csv_asset(csv_filename,search_query):
         for line in data_reader:
             if search_query in line:
                 return line
+
+@bot.command(name='tr')
+async def sm_translate(ctx,alias,*args):
+    if alias == '-setup' or alias == '-set':
+        arg = ' '.join(list(args))
+        if len(arg) == 0:
+            await ctx.send(f'> Please provide an alias || Refer the `!help tr` to know more.')
+        elif lang_translator.tr_setup(arg.lower()):
+            await ctx.send(f'> Default translation is now set to `{arg}`')
+        else:
+            await ctx.send(f'> Invalid alias `{arg}` || Please refer the `!help tr` to know more.')
+
+    elif alias == '-t' or alias == '-to':
+        if len(args) == 0:
+            await ctx.send(f'> Please provide an alias || Refer the `!help tr` to know more.')
+        elif len(args) == 1:
+            await ctx.send(f'> Please provide an statement with alias || Refer the `!help tr` to know more.')
+        else:
+            arg = ' '.join(list(args[1:]))
+            translated = lang_translator.tr_translate_to(args[0].lower(),arg)
+            await ctx.send(f'`{translated}`' if translated is not False else f'Invalid alias `{args[0]}`.')
+
+    elif alias == '-ds' or alias == '-status':
+        status = lang_translator.detectors_status()
+        print(status)
+        print(type(status))
+        embed=discord.Embed(title="Account status", color=0x14ff30, description="Note : Please use this detector only when required.")
+        embed.set_author(name=":green_circle: Language detection Status")
+        for key, value in status.items():
+            embed.add_field(name=key.title(), value=value, inline=True)
+        embed.set_footer(text="Cosmix-6 | Python Dev | SuperMOD - BOT")
+        await ctx.send(embed=embed)
+
+    elif alias == '-d' or alias == '-detect':
+        if len(args)!=0:
+            arg = ' '.join(list(args))
+            matches = lang_translator.tr_detector(arg)
+            embed=discord.Embed(title=f"Result Found : {len(matches)}" if matches is not None else "No result found.", color=0x14ff30, description="Note : This language detection does not invlove Google.")
+            embed.set_author(name="Language detection", icon_url="https://upload.wikimedia.org/wikipedia/commons/d/db/Google_Translate_Icon.png")
+            if matches is not None:
+                for i in matches:
+                    language = i['language']
+                    language = tas.LANGUAGES[language].title()+' - '+language
+                    embed.add_field(name="Language", value=language, inline=True)
+                    embed.add_field(name="Reliable", value='Yes' if i['isReliable']==True else 'No', inline=True)
+                    embed.add_field(name="Confidence", value=i['confidence'], inline=True)
+            else:
+                embed=discord.Embed(title="No Match Found", description="Note : This language detection does not invlove Google.")
+                
+            embed.set_footer(text="Cosmix-6 | Python Dev | SuperMOD - BOT")
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(f'> Please provide an alias || Refer the `!help tr` to know more.')
+
+    elif not alias.startswith('-') and alias.strip() != '':
+        arg = ' '.join(list(args))
+        arg = alias+' '+arg
+        await ctx.send(lang_translator.tr_translate(arg))
+
+    else:
+        await ctx.send('Invalid Input')
 
 @bot.command(name='covid')
 async def corona(ctx,*args):
@@ -96,14 +159,14 @@ async def spam(ctx,*count):
 async def choose(ctx,*args):
   choosen = random.choice(args*3)
   # print(help(ctx.author))
-  if '<@!' in choosen: await ctx.send(f'> {ctx.author}, I choose {choosen}.')
-  else: await ctx.send(f'> {ctx.author}, I choose `{choosen}`.')
+  if '<@!' in choosen: await ctx.send(f'> {ctx.author.mention}, I choose {choosen}.')
+  else: await ctx.send(f'> {ctx.author.mention}, I choose `{choosen}`.')
     
 @bot.command(name="help")
-async def help(ctx,*args)
+async def help(ctx,*args):
     help_embed = discord.Embed(title="Command Help",description="Here are all the commands and their usages.",color=0x14ff30)
-    help_embed.add_field(name="$spam", value="usage: `!spam <count> <message>`\nspams a message for the given number of times",inline=False)
-    help_embed.add_field(name="$covid", value="usage: `!covid <country>`\ngives covid info about a country",inline=False)
+    help_embed.add_field(name="!spam", value="usage: `!spam <count> <message>`\nspams a message for the given number of times",inline=False)
+    help_embed.add_field(name="!covid", value="usage: `!covid <country>`\ngives covid info about a country",inline=False)
     help_embed.set_footer(text="developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
     await ctx.send(embed=help_embed)
     
