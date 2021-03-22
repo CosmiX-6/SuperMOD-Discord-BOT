@@ -13,11 +13,6 @@ from super_mod import lang_translator
 import super_mod.assets.tr_asset_store as tas
 from dotenv import load_dotenv
 
-BASE_DIR = os.path.abspath('')
-opfolder = BASE_DIR+'/Output_data'
-output = opfolder + '/output.txt'
-output.replace(' ','\ ')
-
 date_today = datetime.datetime.today()
 date_text = date_today.strftime('%Y_%m_%d')
 
@@ -156,15 +151,18 @@ async def spam(ctx,*count):
 @bot.command(name='choose')
 async def choose(ctx,*args):
   choosen = random.choice(args*3)
-  # print(help(ctx.author))
   if '<@!' in choosen: await ctx.send(f'> {ctx.author.mention}, I choose {choosen}.')
   else: await ctx.send(f'> {ctx.author.mention}, I choose `{choosen}`.')
     
 @bot.command(name="help")
 async def help(ctx,*args):
     help_embed = discord.Embed(title="Command Help",description="Here are all the commands and their usages.",color=0x14ff30)
-    help_embed.add_field(name="!spam", value="usage: `!spam <count> <message>`\nspams a message for the given number of times",inline=False)
-    help_embed.add_field(name="!covid", value="usage: `!covid <country>`\ngives covid info about a country",inline=False)
+    help_embed.add_field(name="!tr", value="usage: `!tr -t <language> <message>`\nTranslate a message into requested language",inline=False)
+    help_embed.add_field(name="!covid", value="usage: `!covid <country>`\nGives covid status about a country",inline=False)
+    help_embed.add_field(name="!purge", value="usage: `!purge <count>`\nDeletes specified amount of message.",inline=False)
+    help_embed.add_field(name="!spam", value="usage: `!spam <count> <message>`\nSpams a message for the given number of times",inline=False)
+    help_embed.add_field(name="!choose", value="usage: `!choose <option1> <option2> <option...>`\nToss/Lottery system",inline=False)
+    help_embed.add_field(name="!cal", value="usage: `!cal <arithematic_query>`\nCalculator (python3 based)",inline=False)
     help_embed.set_footer(text="developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
     await ctx.send(embed=help_embed)
     
@@ -175,11 +173,6 @@ async def addition(ctx,*args):
         await ctx.send(f'```**Look\'s quite easy,**\n\n{arg} = {(eval(arg)):.2f}```')
     except:
         await ctx.send('`Please avoid using alphabets.`')
-
-@bot.command(name='!exit!')
-async def close(ctx):
-    await ctx.send('I\'m going to sleep now!')
-    time.sleep(30)
 
 @bot.event
 async def on_error(event, *args, **kwargs):
