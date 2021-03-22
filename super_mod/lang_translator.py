@@ -16,6 +16,7 @@ def tr_setup(alias):
             for line in confdata:
                 if 'default_lang =' in line:
                     line = line.replace(line,'default_lang = \''+alias+'\'')
+                    tr_asset_store.default_lang = alias
                 write_config.write(line)
             write_config.close()
         return True
