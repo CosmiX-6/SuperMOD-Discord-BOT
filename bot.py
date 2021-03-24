@@ -63,12 +63,12 @@ async def sm_translate(ctx,alias,*args):
         else:
             arg = ' '.join(list(args[1:]))
             translated = lang_translator.tr_translate_to(args[0].lower(),arg)
-            await ctx.send(f'`{translated}`' if translated is not False else f'Invalid alias `{args[0]}`.')
+            await ctx.reply(f'> {translated}' if translated is not False else f'Invalid alias `{args[0]}`.')
 
     elif alias == '-ds' or alias == '-status':
         status = lang_translator.detectors_status()
         embed=discord.Embed(title="Account status", color=0x14ff30, description="Note : Please use this detector only when required.")
-        embed.set_author(name=":green_circle: Language detection Status")
+        embed.set_author(name="Language detection Status", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Green_circle.svg/200px-Green_circle.svg.png")
         for key, value in status.items():
             embed.add_field(name=key.title(), value=value, inline=True)
         embed.set_footer(text="Cosmix-6 | Python Dev | SuperMOD - BOT")
@@ -98,7 +98,7 @@ async def sm_translate(ctx,alias,*args):
     elif not alias.startswith('-') and alias.strip() != '':
         arg = ' '.join(list(args))
         arg = alias+' '+arg
-        await ctx.send(lang_translator.tr_translate(arg))
+        await ctx.reply(f'> {lang_translator.tr_translate(arg)}')
 
     else:
         await ctx.send('Invalid Input')
@@ -129,7 +129,7 @@ async def corona(ctx,*args):
         await corona(ctx,arg)
 
 @bot.command(name = 'purge')
-async def clear(ctx, count):
+async def clear(ctx, count='1'):
   if count.isdigit():
     await ctx.channel.purge(limit=int(count)+1)
   else:
