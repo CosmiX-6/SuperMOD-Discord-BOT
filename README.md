@@ -7,5 +7,6 @@ A simple discord bot.
 *!spam `count` `message`*<br>
 *!purge `count`*<br>
 *!choose `option 1` `option 2` `option 3`*
+*!help*
 
 Developer : Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )#9395 (Discord)
