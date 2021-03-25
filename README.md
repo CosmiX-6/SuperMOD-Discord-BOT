@@ -1,8 +1,10 @@
 # SuperMOD-Discord-BOT
-A simple discord bot.
+
+Useful bot with multiple features.
 
 ## Covid Info
 #### Displays the covid status for requested country
+###### Covid information are updated on daily basis.
 *!covid `country`*<br>
 
 ## Translate : Replies with the translated message
