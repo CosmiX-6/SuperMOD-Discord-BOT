@@ -4,17 +4,16 @@ import sys
 import time
 import switch
 import random
-import keep_alive
-import pandas as pd
 import datetime
 import discord
+import requests
+import keep_alive
+import pandas as pd
+from bs4 import BeautifulSoup
 from discord.ext import commands
 from super_mod import lang_translator
 import super_mod.assets.tr_asset_store as tas
 from dotenv import load_dotenv
-
-date_today = datetime.datetime.today()
-date_text = date_today.strftime('%Y_%m_%d')
 
 load_dotenv()
 
@@ -23,18 +22,31 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 bot = commands.Bot(command_prefix='!')
 bot.remove_command('help')
 
-def import_html_asset(html_filename):
-    d = pd.read_html(html_filename)
-    df = pd.DataFrame(d[0])
-    i=0
-    col_r_name = {}
-    for col_name in df.columns:
-        col_r_name[col_name] = 'data_'+str(i)
-        i+=1
-    df_new = df.rename(columns=col_r_name)
-    df_new['data_1'] = df_new['data_1'].apply(lambda x: x.lower())
-    df_new = df_new.fillna('0')
-    df_new.to_csv(f'{date_text}.csv')
+def import_html_asset(date_text):
+    url = "https://www.worldometers.info/coronavirus/"
+    html_data = requests.get(url).text
+    soup = BeautifulSoup(html_data,"html5lib")
+    tbody = soup.find_all("table")[0].tbody
+    covid_table = pd.DataFrame(columns=["data_0","data_1","data_2","data_3","data_4","data_5","data_6","data_7","data_8","data_9","data_10","data_11","data_12","data_13"])
+    for row in tbody.find_all('tr')[8:]:
+        col = row.find_all('td')
+        data_0 = col[0].text.strip()
+        data_1 = col[1].text.lower().strip()
+        data_2 = col[2].text.replace(',','').strip()
+        data_3 = col[3].text.replace(',','').strip()
+        data_4 = col[4].text.replace(',','').strip()
+        data_5 = col[5].text.replace(',','').strip()
+        data_6 = col[6].text.replace(',','').strip()
+        data_7 = col[8].text.replace(',','').strip()
+        data_8 = col[9].text.replace(',','').strip()
+        data_9 = col[10].text.replace(',','').strip()
+        data_10 = col[11].text.replace(',','').strip()
+        data_11 = col[12].text.replace(',','').strip()
+        data_12 = col[13].text.replace(',','').strip()
+        data_13 = col[14].text.replace(',','').strip()
+        covid_table = covid_table.append({'data_0':data_0, 'data_1':data_1, 'data_2':data_2, 'data_3':data_3, 'data_4':data_4, 'data_5':data_5, 'data_6':data_6, 'data_7':data_7, 'data_8':data_8, 'data_9':data_9, 'data_10':data_10, 'data_11':data_11, 'data_12':data_12, 'data_13':data_13}, ignore_index=True)
+    covid_table = covid_table.replace(r'^\s*$', 0, regex=True)
+    covid_table.to_csv(f'{date_text}.csv')
 
 def import_csv_asset(csv_filename,search_query):
     with open(f'{csv_filename}.csv') as imported_data:
@@ -106,12 +118,13 @@ async def sm_translate(ctx,alias,*args):
 @bot.command(name='covid')
 async def corona(ctx,*args):
     arg=' '.join(args).lower()
+    date_today = datetime.datetime.today()
+    date_text = date_today.strftime('%Y_%m_%d')
     try:
         result = import_csv_asset(date_text,arg)
         if result:
             embed=discord.Embed(title="100% geniune.", color=0x14ff30)
             embed.set_author(name=f"Corona reports of {result[2].title()}", icon_url="http://www.fleet250.org/upload/race/corona.png")
-            embed.add_field(name="Rank", value=result[0], inline=True)
             embed.add_field(name="Country with population", value=result[14], inline=True)
             embed.add_field(name="Total Cases", value=result[3], inline=True)
             embed.add_field(name="New Cases", value=result[4], inline=True)
@@ -120,12 +133,13 @@ async def corona(ctx,*args):
             embed.add_field(name="Total Recovered", value=result[7], inline=True)
             embed.add_field(name="Active Cases", value=result[8], inline=True)
             embed.add_field(name="Serious", value=result[9], inline=True)
+            embed.add_field(name="Death/1M pop", value=result[11], inline=True)
             embed.set_footer(text="Cosmix-6 | Python Dev | SuperMOD - BOT")
             await ctx.send(embed=embed)
         else:
             await ctx.send('> `Check the country name and try again.`')
     except Exception as error:
-        import_html_asset('covid_dataset.html')
+        import_html_asset(date_text)
         await corona(ctx,arg)
 
 @bot.command(name = 'purge')
