@@ -1,4 +1,5 @@
 import os
+import re
 import csv
 import sys
 import time
@@ -167,7 +168,7 @@ async def choose(ctx,*args):
     choosen = random.choice(args*3)
     if '<@!' in choosen: await ctx.send(f'> {ctx.author.mention}, I choose {choosen}.')
     else: await ctx.send(f'> {ctx.author.mention}, I choose `{choosen}`.')
-    
+
 @bot.command(name="kick")
 async def kick(ctx,victim,*reason):
     if "owner" in str(ctx.author.roles):
@@ -201,7 +202,7 @@ async def help(ctx,*args):
     help_embed.add_field(name="!cal", value="usage: `!cal <arithematic_query>`\nCalculator (python3 based)",inline=False)
     help_embed.set_footer(text="Developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
     await ctx.send(embed=help_embed)
-    
+
 @bot.command(name='cal')
 async def addition(ctx,*args):
     arg = ''.join(args)
@@ -209,6 +210,10 @@ async def addition(ctx,*args):
         await ctx.send(f'```**Look\'s quite easy,**\n\n{arg} = {(eval(arg)):.2f}```')
     except:
         await ctx.send('`Please avoid using alphabets.`')
+
+@bot.command(name='test')
+async def test(ctx):
+    print(ctx.author.id)
 
 @bot.event
 async def on_error(event, *args, **kwargs):
