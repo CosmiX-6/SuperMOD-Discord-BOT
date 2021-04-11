@@ -29,6 +29,9 @@ Useful bot with multiple features.
 ## Choose one from multiple choice / Toss
 *!choose `option 1` `option 2` `option 3`*
 
+## Kick
+*!kick `user` `optional_notes`*
+
 ## Help command
 *!help*
 

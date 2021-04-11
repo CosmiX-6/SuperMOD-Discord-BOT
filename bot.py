@@ -164,10 +164,31 @@ async def spam(ctx,*count):
 
 @bot.command(name='choose')
 async def choose(ctx,*args):
-  choosen = random.choice(args*3)
-  if '<@!' in choosen: await ctx.send(f'> {ctx.author.mention}, I choose {choosen}.')
-  else: await ctx.send(f'> {ctx.author.mention}, I choose `{choosen}`.')
+    choosen = random.choice(args*3)
+    if '<@!' in choosen: await ctx.send(f'> {ctx.author.mention}, I choose {choosen}.')
+    else: await ctx.send(f'> {ctx.author.mention}, I choose `{choosen}`.')
     
+@bot.command(name="kick")
+async def kick(ctx,victim,*reason):
+    if "owner" in str(ctx.author.roles):
+        if '<@!' in victim:
+            victim = re.search('\d+',victim).group()
+        user = await ctx.guild.fetch_member(victim)
+        name = user.name
+        await user.kick()
+        embed=discord.Embed(title="Kicked.",description=str(name)+" has been kicked from the server.",color=0xd50000)
+        embed.set_footer(text="Developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
+        await ctx.send(embed=embed)
+        await user.create_dm()
+        embed=discord.Embed(title="Kick Notice",description="You just got kicked from "+str(ctx.guild)+" by "+str(ctx.author),color=0xd50000)
+        embed.add_field(name="Reason :", value=" ".join(list(reason)), inline=False)
+        embed.set_footer(text="Developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
+        await user.send(embed=embed)
+    else:
+        embed=discord.Embed(title="Invalid Permissions",description=str(ctx.author.mention)+" you are not allowed to use that command",color=0xd50000)
+        embed.set_footer(text="Developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
+        await ctx.channel.send(embed=embed)
+
 @bot.command(name="help")
 async def help(ctx,*args):
     help_embed = discord.Embed(title="Command Help",description="Here are all the commands and their usages.",color=0x14ff30)
@@ -176,8 +197,9 @@ async def help(ctx,*args):
     help_embed.add_field(name="!purge", value="usage: `!purge <count>`\nDeletes specified amount of message.",inline=False)
     help_embed.add_field(name="!spam", value="usage: `!spam <count> <message>`\nSpams a message for the given number of times",inline=False)
     help_embed.add_field(name="!choose", value="usage: `!choose <option1> <option2> <option...>`\nToss/Lottery system",inline=False)
+    help_embed.add_field(name="!kick", value="usage: `!kick <user> <reason>`\nKicks the user out of server.",inline=False)
     help_embed.add_field(name="!cal", value="usage: `!cal <arithematic_query>`\nCalculator (python3 based)",inline=False)
-    help_embed.set_footer(text="developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
+    help_embed.set_footer(text="Developed by Co$MiX-( ɹǝɯɯɐɹƃoɹd uoɥʇʎd )")
     await ctx.send(embed=help_embed)
     
 @bot.command(name='cal')
